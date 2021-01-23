@@ -4,12 +4,12 @@ CXX = g++
 	g++ -DNPKG -c $< -o $@
 
 
-npkg: npkg.o
-	g++ -DNPKG -o npkg npkg.o
+autopkg: autopkg.o
+	g++ -DNPKG -o autopkg autopkg.o
 
 
 
 
 clean:
-	rm -f npkg *.o
+	rm -f autopkg *.o
 
