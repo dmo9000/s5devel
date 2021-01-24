@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include "groupinstall.h"
+#include "pkginstall.h"
 
 
 
@@ -83,8 +84,7 @@ int main(int argc, char *argv[])
         autopkg_groupinstall(groupname);
         break;
     case install:
-        std::cout << "Running install operation for package '" << packagename << "'"
-                  << std::endl;
+        autopkg_pkginstall(packagename);
         break;
     case remove:
         std::cout << "Running remove operation for package '" << packagename << "'"

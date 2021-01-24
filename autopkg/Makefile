@@ -1,6 +1,6 @@
 CXX = g++
 CXXLDFLAGS=-L/usr/lib64 -L/lib64 -lssl -lidn2 -lcrypto -lbrotlidec -lz -lpthread -lc -ldl -lbrotlicommon -lm -lcurl 
-AUTOPKG_OBJS=autopkg.o groupinstall.o
+AUTOPKG_OBJS=autopkg.o groupinstall.o pkginstall.o httpdriver.o
 
 %.o : %.cpp
 	g++ -DNPKG -c $< -o $@

@@ -1,9 +1,10 @@
 #pragma once
 #include <iostream>
+#include "httpdriver.h"
 
 #define AUTOPKG_PROTO   "http://"
 #define AUTOPKG_SERVER	"192.168.20.50"
 #define AUTOPKG_PKGROOT	"/s5linux/"
-#define AUTOPKG_TMPDATA	"/var/spool/pkg"
+#define AUTOPKG_SPOOL	"/var/spool/pkg"
 
-int autopkg_groupinstall(std::string groupname);
+int autopkg_pkginstall(std::string pkgname);
