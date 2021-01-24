@@ -14,9 +14,9 @@ int autopkg_pkginstall(std::string pkgname)
     pkg_url = std::string(AUTOPKG_PROTO) +
               std::string(AUTOPKG_SERVER) +
               std::string(AUTOPKG_PKGROOT) +
-              std::string(pkgname) + ".pkg";
+              std::string(pkgname) + ".pkg.gz";
 
-    pkg_dest = std::string(AUTOPKG_SPOOL) + "/" + pkgname + ".pkg";
+    pkg_dest = std::string(AUTOPKG_SPOOL) + "/" + pkgname + ".pkg.gz";
 
     std::cout << "Reading from " << pkg_url << " ... " << std::endl;
     std::cout << "Writing to " << pkg_dest << " ... " << std::endl;
