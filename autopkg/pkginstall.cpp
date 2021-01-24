@@ -32,8 +32,6 @@ int autopkg_pkginstall(std::string pkgname)
     }
 
     std::shared_ptr<Subprocess> sp_gunzip = std::make_shared<Subprocess>();
-    std::shared_ptr<Subprocess> sp_echo1 = std::make_shared<Subprocess>();
-    std::shared_ptr<Subprocess> sp_yes = std::make_shared<Subprocess>();
     std::shared_ptr<Subprocess> sp_pkgadd = std::make_shared<Subprocess>();
 
     char *argv_gunzip[] = { const_cast<char *>("/usr/bin/gunzip"),
@@ -41,24 +39,39 @@ int autopkg_pkginstall(std::string pkgname)
                             const_cast<char *>(pkg_dest.c_str()),
                             NULL
                           };
-
-//    char *argv_echo1[] = { const_cast<char *>("1"), NULL };
-//    char *argv_yes[] = { NULL };
-//
-    char *argv_pkgadd[] = { const_cast<char *>("/usr/5bin/pkgadd"),
-                            const_cast<char *>("-d"), const_cast<char *>(pkg_decomp.c_str()),
-                            NULL
-                          };
-
-//    sp_yes->SetCommand("/bin/yes", 0, argv_yes );
-//    sp_echo1->SetCommand("/bin/echo", 1, argv_echo1 );
-
     sp_gunzip->SetCommand("/usr/bin/gunzip", 2, argv_gunzip);
     sp_gunzip->StartProcess();
-    sp_gunzip->Wait();
 
+    int child_status = 0;
+    child_status = sp_gunzip->Wait();
+
+    if (child_status != 0) {
+        std::cerr << "+++ error unzipping package " << pkg_dest << std::endl;
+        std::cerr << "+++ gunzip exit code is " << child_status << std::endl;
+        return 1;
+    }
+
+    std::cout << "child status = " << child_status << std::endl;
+
+    char *argv_pkgadd[] = { const_cast<char *>("/usr/5bin/pkgadd"),
+                            const_cast<char *>("-d"),
+                            const_cast<char *>(pkg_decomp.c_str()),
+                            NULL
+                          };
     sp_pkgadd->SetCommand("/usr/5bin/pkgadd", 2, argv_pkgadd );
+    sp_pkgadd->WriteStdin("1\ny\n", 4);
     sp_pkgadd->StartProcess();
+
+    char buffer[8192];
+    int rd = -1;
+    while (rd <= 0) {
+        int rd = sp_pkgadd->ReadStderr((char *) &buffer, 8192);
+        if (rd > 0) {
+            std::cout << rd << " bytes read!" << std::endl;
+        }
+    }
+    child_status = sp_pkgadd->Wait();
+    std::cout << "pkgadd exit code = " << child_status << std::endl;
 
     return 0;
 }
