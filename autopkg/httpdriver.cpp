@@ -21,7 +21,7 @@ int http_download(std::string source, std::string dest)
     CURLUcode uc;
     std::string readBuffer;
 
-    std::cout << "http_download(" + source + ", " + dest + ");" << std::endl;
+    //std::cout << "http_download(" + source + ", " + dest + ");" << std::endl;
 
     //result = curl_url_set(curlu, CURLUPART_URL, source.c_str(), 0);
 
