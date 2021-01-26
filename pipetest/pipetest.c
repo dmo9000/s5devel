@@ -8,8 +8,9 @@
  
 #define NUM_PIPES          3 
  
-#define PARENT_WRITE_PIPE  0
-#define PARENT_READ_PIPE   1
+#define STDIN_PIPE    0
+#define STDOUT_PIPE   1
+#define STDERR_PIPE   2 
  
 int pipes[NUM_PIPES][3];
  
@@ -18,11 +19,13 @@ int pipes[NUM_PIPES][3];
 #define READ_FD  0
 #define WRITE_FD 1
  
-#define PARENT_STDOUT_FD ( pipes[PARENT_READ_PIPE][READ_FD]   )
-#define PARENT_STDIN_FD  ( pipes[PARENT_WRITE_PIPE][WRITE_FD] )
+#define PARENT_STDIN_FD  ( pipes[STDIN_PIPE][WRITE_FD] )
+#define PARENT_STDOUT_FD ( pipes[STDOUT_PIPE][READ_FD]   )
+#define PARENT_STDERR_FD ( pipes[STDERR_PIPE][READ_FD]   )
  
-#define CHILD_STDIN_FD   ( pipes[PARENT_WRITE_PIPE][READ_FD]  )
-#define CHILD_STDOUT_FD  ( pipes[PARENT_READ_PIPE][WRITE_FD]  )
+#define CHILD_STDIN_FD   ( pipes[STDIN_PIPE][READ_FD]  )
+#define CHILD_STDOUT_FD  ( pipes[STDOUT_PIPE][WRITE_FD]  )
+#define CHILD_STDERR_FD  ( pipes[STDERR_PIPE][WRITE_FD]  )
  
 void main()
 {
@@ -30,8 +33,8 @@ void main()
     int infd[2];
      
     // pipes for parent to write and read
-    pipe(pipes[PARENT_READ_PIPE]);
-    pipe(pipes[PARENT_WRITE_PIPE]);
+    pipe(pipes[STDOUT_PIPE]);
+    pipe(pipes[STDIN_PIPE]);
      
     if(!fork()) {
  
