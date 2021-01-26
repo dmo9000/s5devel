@@ -5,6 +5,8 @@
 #include "pkginstall.h"
 #include "subprocess.h"
 
+extern int debug_mode;
+
 int autopkg_pkginstall(std::string pkgname)
 {
     std::string pkg_url;
@@ -32,6 +34,7 @@ int autopkg_pkginstall(std::string pkgname)
     }
 
     std::shared_ptr<Subprocess> sp_gunzip = std::make_shared<Subprocess>();
+    sp_gunzip->debug = debug_mode;
 
     char *argv_gunzip[] = { const_cast<char *>("/usr/bin/gunzip"),
                             const_cast<char *>("-f"),
@@ -53,6 +56,7 @@ int autopkg_pkginstall(std::string pkgname)
     //std::cout << "child status = " << child_status << std::endl;
 
     std::shared_ptr<Subprocess> sp_pkgadd = std::make_shared<Subprocess>();
+    sp_pkgadd->debug = debug_mode;
 
     char *argv_pkgadd[] = { const_cast<char *>("/usr/5bin/pkgadd"),
                             const_cast<char *>("-d"),
@@ -67,7 +71,9 @@ int autopkg_pkginstall(std::string pkgname)
         sp_pkgadd->BufferStderr();
     }
 
-    //sp_pkgadd->DumpStderr(stdout);
+    if (sp_pkgadd->debug) {
+        sp_pkgadd->DumpStderr(stdout);
+    }
     std::cout << std::endl;
     std::cout << "+++ Found package id prompt" << std::endl;
     sp_pkgadd->ClearStderr();
@@ -89,7 +95,9 @@ int autopkg_pkginstall(std::string pkgname)
         sp_pkgadd->BufferStderr();
     }
 
-    //sp_pkgadd->DumpStderr(stdout);
+    if (sp_pkgadd->debug) {
+        sp_pkgadd->DumpStderr(stdout);
+    }
     //std::cout << std::endl;
     std::cout << "+++ Found end of installation marker [success]" << std::endl;
     sp_pkgadd->ClearStderr();

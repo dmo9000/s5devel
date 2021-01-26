@@ -5,6 +5,8 @@
 #include "pkgremove.h"
 #include "subprocess.h"
 
+extern int debug_mode;
+
 int autopkg_pkgremove(std::string pkgname)
 {
     std::string pkg_url;
@@ -14,6 +16,7 @@ int autopkg_pkgremove(std::string pkgname)
     std::cout << "Running pkgremove for pkg '" + pkgname + "'" << std::endl;
 
     std::shared_ptr<Subprocess> sp_pkgrm = std::make_shared<Subprocess>();
+    sp_pkgrm->debug = debug_mode;
 
     char *argv_pkgrm[] = { const_cast<char *>("/usr/5bin/pkgrm"),
                            const_cast<char *>(pkgname.c_str()),
@@ -32,7 +35,10 @@ int autopkg_pkgremove(std::string pkgname)
         }
     }
 
-    //sp_pkgrm->DumpStderr(stdout);
+    if (sp_pkgrm->debug) {
+        sp_pkgrm->DumpStderr(stdout);
+        std::cout << std::endl;
+    }
     std::cout << std::endl;
     std::cout << "+++ Found package removal prompt" << std::endl;
     sp_pkgrm->ClearStderr();
@@ -50,7 +56,9 @@ int autopkg_pkgremove(std::string pkgname)
         sp_pkgrm->BufferStderr();
     }
 
-    //sp_pkgrm->DumpStderr(stdout);
+    if (sp_pkgrm->debug) {
+        sp_pkgrm->DumpStderr(stdout);
+    }
     //std::cout << std::endl;
     std::cout << "+++ Found end of removal marker [success]" << std::endl;
     sp_pkgrm->ClearStderr();

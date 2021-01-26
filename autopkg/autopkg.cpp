@@ -6,6 +6,8 @@
 #include "pkgremove.h"
 
 
+int debug_mode = 0;
+
 
 void usage()
 {
@@ -37,42 +39,53 @@ int main(int argc, char *argv[])
 
     /* check command line options */
 
-    switch (getopt(argc, argv, "i:g:hr:")) {
-    case 'h':
-        usage();
-        return 1;
-        break;
-    case 'i':
-        if (AutoPkgMode != none) {
-            std::cerr << "Only one mode can be specified." << std::endl;
-            return 254;
-        } else {
-            AutoPkgMode = install;
-            packagename = optarg;
-        }
-        break;
-    case 'g':
-        if (AutoPkgMode != none) {
-            std::cerr << "Only one mode can be specified." << std::endl;
-            return 254;
-        } else {
-            AutoPkgMode = groupinstall;
-            groupname = optarg;
-        }
-        break;
-    case 'r':
-        if (AutoPkgMode != none) {
-            std::cerr << "Only one mode can be specified." << std::endl;
-            return 254;
-        } else {
-            AutoPkgMode = remove;
-            packagename = optarg;
-        }
-        break;
+    while ((c = getopt(argc, argv, ":di:g:hr:")) != -1) {
+        switch(c) {
+        case '?':
+            std::cerr << "unknown option " << optopt << std::endl;
+            break;
+        case ':':
+            std::cerr << "option " << optopt << "requires a value " << std::endl;
+            break;
+        case 'h':
+            usage();
+            return 1;
+            break;
+        case 'd':
+            debug_mode = 1;
+            break;
+        case 'i':
+            if (AutoPkgMode != none) {
+                std::cerr << "Only one mode can be specified." << std::endl;
+                return 254;
+            } else {
+                AutoPkgMode = install;
+                packagename = optarg;
+            }
+            break;
+        case 'g':
+            if (AutoPkgMode != none) {
+                std::cerr << "Only one mode can be specified." << std::endl;
+                return 254;
+            } else {
+                AutoPkgMode = groupinstall;
+                groupname = optarg;
+            }
+            break;
+        case 'r':
+            if (AutoPkgMode != none) {
+                std::cerr << "Only one mode can be specified." << std::endl;
+                return 254;
+            } else {
+                AutoPkgMode = remove;
+                packagename = optarg;
+            }
+            break;
 
-    default:
-        std::cerr << "Unknown option '" << c << "'" << std::endl;
-        return 1;
+        default:
+            std::cerr << "Unknown option '" << c << "'" << std::endl;
+            return 1;
+        }
     }
 
 

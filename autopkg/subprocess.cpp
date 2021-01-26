@@ -125,8 +125,10 @@ int Subprocess::StartProcess()
 
     }
 
-    std::cout << "parent process continuing, child pid is "
-              << childpid << std::endl;
+    if (debug) {
+        std::cout << "parent process continuing, child pid is "
+                  << childpid << std::endl;
+    }
 
 
     return 0;
