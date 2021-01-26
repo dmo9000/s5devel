@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++20
+CXXFLAGS = -std=c++20 -g -ggdb 
 CXXLDFLAGS=-L/usr/lib64 -L/lib64 -lssl -lidn2 -lcrypto -lbrotlidec -lz -lpthread -lc -ldl -lbrotlicommon -lm -lcurl 
 AUTOPKG_OBJS=autopkg.o groupinstall.o pkginstall.o httpdriver.o subprocess.o
 

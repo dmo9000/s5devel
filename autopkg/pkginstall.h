@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "httpdriver.h"
+#include "string.h"
 
 #define AUTOPKG_PROTO   "http://"
 #define AUTOPKG_SERVER	"192.168.20.50"

@@ -59,17 +59,40 @@ int autopkg_pkginstall(std::string pkgname)
                             NULL
                           };
     sp_pkgadd->SetCommand("/usr/5bin/pkgadd", 2, argv_pkgadd );
-    sp_pkgadd->WriteStdin("1\ny\n", 4);
+//    sp_pkgadd->WriteStdin("1\ny\n", 4);
     sp_pkgadd->StartProcess();
 
-    char buffer[8192];
-    int rd = -1;
-    while (rd <= 0) {
-        int rd = sp_pkgadd->ReadStderr((char *) &buffer, 8192);
-        if (rd > 0) {
-            std::cout << rd << " bytes read!" << std::endl;
-        }
+    while (!sp_pkgadd->StderrContains(const_cast<char *>("(default: all)"))) {
+        sp_pkgadd->BufferStderr();
     }
+
+    //sp_pkgadd->DumpStderr(stdout);
+    std::cout << std::endl;
+    std::cout << "+++ Found package id prompt" << std::endl;
+    sp_pkgadd->ClearStderr();
+
+    /* first response received from pkgadd, select package 1 */
+
+    if (!sp_pkgadd->WriteStdin(const_cast<char *>("1\n"), 2)) {
+        std::cerr << "Error selecting package from list." << std::endl;
+        assert(NULL);
+    }
+
+    while (!(sp_pkgadd->StderrContains(const_cast<char *>("Installation of <")) &&
+             (sp_pkgadd->StderrContains(const_cast<char *>("was successful.\n"))))) {
+        /* answer yes to all prompts - make this a bit more intelligent later on */
+        if (!sp_pkgadd->WriteStdin(const_cast<char *> ("y\n"), 2)) {
+            //std::cerr << "warning: error sending y to pkgadd" << std::endl;
+        }
+
+        sp_pkgadd->BufferStderr();
+    }
+
+    //sp_pkgadd->DumpStderr(stdout);
+    //std::cout << std::endl;
+    std::cout << "+++ Found end of installation marker [success]" << std::endl;
+    sp_pkgadd->ClearStderr();
+
     child_status = sp_pkgadd->Wait();
     std::cout << "pkgadd exit code = " << child_status << std::endl;
 
