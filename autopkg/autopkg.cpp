@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "groupinstall.h"
 #include "pkginstall.h"
+#include "pkgremove.h"
 
 
 
@@ -87,9 +88,7 @@ int main(int argc, char *argv[])
         autopkg_pkginstall(packagename);
         break;
     case remove:
-        std::cout << "Running remove operation for package '" << packagename << "'"
-                  << std::endl;
-
+        autopkg_pkgremove(packagename);
         break;
     default:
         std::cerr << "Unknown operation:" << AutoPkgMode << std::endl;

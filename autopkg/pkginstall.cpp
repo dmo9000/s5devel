@@ -32,7 +32,6 @@ int autopkg_pkginstall(std::string pkgname)
     }
 
     std::shared_ptr<Subprocess> sp_gunzip = std::make_shared<Subprocess>();
-    std::shared_ptr<Subprocess> sp_pkgadd = std::make_shared<Subprocess>();
 
     char *argv_gunzip[] = { const_cast<char *>("/usr/bin/gunzip"),
                             const_cast<char *>("-f"),
@@ -51,7 +50,9 @@ int autopkg_pkginstall(std::string pkgname)
         return 1;
     }
 
-    std::cout << "child status = " << child_status << std::endl;
+    //std::cout << "child status = " << child_status << std::endl;
+
+    std::shared_ptr<Subprocess> sp_pkgadd = std::make_shared<Subprocess>();
 
     char *argv_pkgadd[] = { const_cast<char *>("/usr/5bin/pkgadd"),
                             const_cast<char *>("-d"),

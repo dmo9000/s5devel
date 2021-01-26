@@ -10,7 +10,7 @@
 
 #define BUFSIZE	65536
 
-#define NUM_PIPES		3	
+#define NUM_PIPES		3
 #define STDIN_PIPE		0
 #define STDOUT_PIPE		1
 #define STDERR_PIPE		2

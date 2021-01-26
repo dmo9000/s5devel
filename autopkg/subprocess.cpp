@@ -5,7 +5,9 @@ int Subprocess::Wait()
 {
     int wstatus = 0;
     pid_t wait_pid = -1;
-    std::cout << "Waiting for childpid = " << childpid << std::endl;
+    if (debug) {
+        std::cout << "Waiting for childpid = " << childpid << std::endl;
+    }
     wait_pid = waitpid(childpid, &wstatus, 0);
     if (wait_pid != childpid) {
         std::cout << "wait_pid did not match childpid" << std::endl;
