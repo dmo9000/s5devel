@@ -55,7 +55,7 @@ int http_download(std::string source, std::string dest)
         res = curl_easy_perform(curl);
         long http_code = 0;
         http_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-        std::cout << "HTTP status code: " << http_code << std::endl;
+        //std::cout << "HTTP status code: " << http_code << std::endl;
 
         if (res != CURLE_OK)  {
             std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;

@@ -13,7 +13,9 @@ int autopkg_pkgremove(std::string pkgname)
     std::string pkg_dest;
     std::string pkg_decomp;
 
-    std::cout << "Running pkgremove for pkg '" + pkgname + "'" << std::endl;
+    if (debug_mode) {
+        std::cout << "Running pkgremove for pkg '" + pkgname + "'" << std::endl;
+    }
 
     std::shared_ptr<Subprocess> sp_pkgrm = std::make_shared<Subprocess>();
     sp_pkgrm->debug = debug_mode;
@@ -28,9 +30,9 @@ int autopkg_pkgremove(std::string pkgname)
     while (!sp_pkgrm->StderrContains(const_cast<char *>("remove this package? [y,n,?,q]"))) {
         sp_pkgrm->BufferStderr();
         if (sp_pkgrm->StderrContains(const_cast<char *>("pkgrm: ERROR: no package associated with <"))) {
-            std::cerr << "+++ Looks like package named '" << pkgname << "' is not installed." << std::endl;
+            std::cerr << "+++ Package named '" << pkgname << "' is not installed." << std::endl;
             int child_status = sp_pkgrm->Wait();
-            std::cout << "pkgrm exit code = " << child_status << std::endl;
+            //std::cout << "pkgrm exit code = " << child_status << std::endl;
             return 1;
         }
     }
@@ -38,9 +40,9 @@ int autopkg_pkgremove(std::string pkgname)
     if (sp_pkgrm->debug) {
         sp_pkgrm->DumpStderr(stdout);
         std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << "+++ Found package removal prompt" << std::endl;
     }
-    std::cout << std::endl;
-    std::cout << "+++ Found package removal prompt" << std::endl;
     sp_pkgrm->ClearStderr();
 
     /* first response received from pkgadd, select package 1 */
@@ -58,13 +60,18 @@ int autopkg_pkgremove(std::string pkgname)
 
     if (sp_pkgrm->debug) {
         sp_pkgrm->DumpStderr(stdout);
+        std::cout << std::endl;
+        std::cout << "+++ Found end of removal marker [success]" << std::endl;
     }
-    //std::cout << std::endl;
-    std::cout << "+++ Found end of removal marker [success]" << std::endl;
     sp_pkgrm->ClearStderr();
 
     int child_status = sp_pkgrm->Wait();
-    std::cout << "pkgrm exit code = " << child_status << std::endl;
+    //std::cout << "pkgrm exit code = " << child_status << std::endl;
+    if (child_status == 0) {
+        std::cout << "Removal of package <" << pkgname << "> [OKAY]" << std::endl;
+    } else {
+        std::cout << "Removal of package <" << pkgname << "> [FAIL] pkgrm exit status = " << child_status << std::endl;
+    }
 
     return 0;
 }

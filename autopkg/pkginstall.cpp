@@ -13,7 +13,9 @@ int autopkg_pkginstall(std::string pkgname)
     std::string pkg_dest;
     std::string pkg_decomp;
 
-    std::cout << "Running pkginstall for pkg '" + pkgname + "'" << std::endl;
+    if (debug_mode) {
+        std::cout << "Running pkginstall for pkg '" + pkgname + "'" << std::endl;
+    }
 
     pkg_url = std::string(AUTOPKG_PROTO) +
               std::string(AUTOPKG_SERVER) +
@@ -23,8 +25,10 @@ int autopkg_pkginstall(std::string pkgname)
     pkg_dest = std::string(AUTOPKG_SPOOL) + "/" + pkgname + ".pkg.gz";
     pkg_decomp = std::string(AUTOPKG_SPOOL) + "/" + pkgname + ".pkg";
 
+    /*
     std::cout << " - Reading from " << pkg_url << " ... " << std::endl;
     std::cout << " - Writing to " << pkg_dest << " ... " << std::endl;
+    */
 
     int s = http_download(pkg_url, pkg_dest);
 
@@ -73,15 +77,16 @@ int autopkg_pkginstall(std::string pkgname)
 
     if (sp_pkgadd->debug) {
         sp_pkgadd->DumpStderr(stdout);
+        std::cout << "+++ Found package id prompt" << std::endl;
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
-    std::cout << "+++ Found package id prompt" << std::endl;
+
     sp_pkgadd->ClearStderr();
 
     /* first response received from pkgadd, select package 1 */
 
     if (!sp_pkgadd->WriteStdin(const_cast<char *>("1\n"), 2)) {
-        std::cerr << "Error selecting package from list." << std::endl;
+        std::cerr << "pkgadd: error selecting package from list." << std::endl;
         assert(NULL);
     }
 
@@ -99,11 +104,18 @@ int autopkg_pkginstall(std::string pkgname)
         sp_pkgadd->DumpStderr(stdout);
     }
     //std::cout << std::endl;
-    std::cout << "+++ Found end of installation marker [success]" << std::endl;
+    if (sp_pkgadd->debug) {
+        std::cout << "+++ Found end of installation marker [success]" << std::endl;
+    }
     sp_pkgadd->ClearStderr();
 
     child_status = sp_pkgadd->Wait();
-    std::cout << "pkgadd exit code = " << child_status << std::endl;
+    //std::cout << "pkgadd exit code = " << child_status << std::endl;
+    if (child_status == 0) {
+        std::cout << "Installed <" << pkgname << "> [OKAY] " << std::endl;
+    } else {
+        std::cout << "Installed <" << pkgname << " [FAIL] pkgadd exit status = " << child_status << std::endl;
+    }
 
     return 0;
 }
