@@ -8,7 +8,7 @@
 #include <string.h>
 #include <assert.h>
 
-#define BUFSIZE	65536
+#define BUFSIZE	131072
 
 #define NUM_PIPES		3
 #define STDIN_PIPE		0
