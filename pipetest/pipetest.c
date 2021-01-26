@@ -45,8 +45,10 @@ void main()
            want the exec'ed program to know these existed */
         close(CHILD_STDIN_FD);
         close(CHILD_STDOUT_FD);
-        close(PARENT_STDOUT_FD);
+        close(CHILD_STDERR_FD);
         close(PARENT_STDIN_FD);
+        close(PARENT_STDOUT_FD);
+        close(PARENT_STDERR_FD);
 
 	fprintf(stdout, "stdout, hello\n");
 	fprintf(stderr, "stderr, hello\n");
@@ -58,6 +60,7 @@ void main()
         /* close fds not required by parent */       
         close(CHILD_STDIN_FD);
         close(CHILD_STDOUT_FD);
+        close(CHILD_STDERR_FD);
  
         // Write to child’s stdin
   
