@@ -29,17 +29,17 @@ int pipes[NUM_PIPES][3];
  
 void main()
 {
-    int outfd[2];
-    int infd[2];
      
     // pipes for parent to write and read
     pipe(pipes[STDOUT_PIPE]);
     pipe(pipes[STDIN_PIPE]);
+    pipe(pipes[STDERR_PIPE]);
      
     if(!fork()) {
  
         dup2(CHILD_STDIN_FD, STDIN_FILENO);
         dup2(CHILD_STDOUT_FD, STDOUT_FILENO);
+        dup2(CHILD_STDERR_FD, STDERR_FILENO);
  
         /* Close fds not required by child. Also, we don't
            want the exec'ed program to know these existed */
@@ -48,7 +48,8 @@ void main()
         close(PARENT_STDOUT_FD);
         close(PARENT_STDIN_FD);
 
-	fprintf(stdout, "hello\n");
+	fprintf(stdout, "stdout, hello\n");
+	fprintf(stderr, "stderr, hello\n");
           
     } else {
         char buffer[100];
@@ -68,5 +69,16 @@ void main()
         } else {
             printf("received %d bytes from child's stdout\n", count);
         }
+
+        // Read from child’s stderr
+        count = read(PARENT_STDERR_FD, buffer, sizeof(buffer)-1);
+        if (count > 0) {
+            buffer[count] = 0;
+            printf("2> %s", buffer);
+        } else {
+            printf("received %d bytes from child's stderr\n", count);
+        }
+
+
     }
 }
