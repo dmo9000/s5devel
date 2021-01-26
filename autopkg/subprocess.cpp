@@ -53,6 +53,10 @@ int Subprocess::StartProcess()
         std::cout << "Couldn't create pipe_stdout" << std::endl;
         return 1;
     }
+    if (pipe(pipes[PARENT_STDERR_PIPE]) < 0) {
+        std::cout << "Couldn't create pipe_stdout" << std::endl;
+        return 1;
+	}
 
     childpid = fork();
 
@@ -79,9 +83,11 @@ int Subprocess::StartProcess()
         close(PARENT_STDIN_PIPE);
         close(PARENT_STDOUT_PIPE);
         close(PARENT_STDERR_PIPE);
+	/*
         close(PARENT_STDIN_FD);
         close(PARENT_STDOUT_FD);
         close(PARENT_STDERR_FD);
+	*/
 
         //close (2); /* stderr */
 
@@ -95,11 +101,9 @@ int Subprocess::StartProcess()
         /* parent process */
 	int flags = 0;
 
-	/*
         close(PARENT_STDIN_PIPE);
         close(PARENT_STDOUT_PIPE);
         close(PARENT_STDERR_PIPE);
-	*/
 	/*
         flags = fcntl(PARENT_STDOUT_FD, F_GETFL, 0);
         fcntl(PARENT_STDIN_FD, F_SETFL, flags | O_NONBLOCK);
