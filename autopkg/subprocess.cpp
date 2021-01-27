@@ -186,7 +186,6 @@ ssize_t Subprocess::BufferStderr()
     ssize_t maxread = 0;
     ssize_t rd = 0;
     char *bufptr = (char *) &buf_stderr;
-    assert (len_stderr < BUFSIZE);
     bufptr += len_stderr;
 
     if ((BUFSIZE - len_stderr - 1) <= 0) {
