@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <unistd.h>
+#include <iomanip>
 #include <memory>
 #include "pkginstall.h"
 #include "subprocess.h"
@@ -16,11 +17,16 @@ int autopkg_pkginstall(std::string pkgname)
     if (debug_mode) {
         std::cout << "Running pkginstall for pkg '" + pkgname + "'" << std::endl;
     }
+    std::string zpkgname = std::string(pkgname) + ".pkg.gz"; 
 
     pkg_url = std::string(AUTOPKG_PROTO) +
               std::string(AUTOPKG_SERVER) +
               std::string(AUTOPKG_PKGROOT) +
-              std::string(pkgname) + ".pkg.gz";
+	      zpkgname; 
+
+    std::string pkgmsg = "Installing package " + zpkgname + " ... ";
+
+    std::cout << std::left << std::setw(60) << pkgmsg;
 
     pkg_dest = std::string(AUTOPKG_SPOOL) + "/" + pkgname + ".pkg.gz";
     pkg_decomp = std::string(AUTOPKG_SPOOL) + "/" + pkgname + ".pkg";
@@ -110,11 +116,12 @@ int autopkg_pkginstall(std::string pkgname)
     sp_pkgadd->ClearStderr();
 
     child_status = sp_pkgadd->Wait();
-    //std::cout << "pkgadd exit code = " << child_status << std::endl;
     if (child_status == 0) {
-        std::cout << "Installed <" << pkgname << "> [OKAY] " << std::endl;
+        std::cout << GRN << "[OK] " \
+		<< RST << std::endl;
     } else {
-        std::cout << "Installed <" << pkgname << " [FAIL] pkgadd exit status = " << child_status << std::endl;
+        std::cout << RED << "[FAIL:" \
+		<< child_status << "]" << RST << std::endl;
     }
 
     return 0;
