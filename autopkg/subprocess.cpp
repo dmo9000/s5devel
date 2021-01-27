@@ -183,6 +183,7 @@ ssize_t Subprocess::ReadStderr(char *b, ssize_t l)
 
 ssize_t Subprocess::BufferStderr()
 {
+    ssize_t maxread = 0;
     ssize_t rd = 0;
     char *bufptr = (char *) &buf_stderr;
     assert (len_stderr < BUFSIZE);
@@ -193,7 +194,19 @@ ssize_t Subprocess::BufferStderr()
 	ClearStderr();
         std::cerr << "Not enough room in STDERR buffer. (len_stderr = " << len_stderr << "), flushing buffer" << std::endl;
     }
-    rd = read(PARENT_STDERR_FD, bufptr, BUFSIZE - len_stderr - 1);
+    maxread = BUFSIZE - len_stderr - 1; 
+    if (maxread > (BUFSIZE-1)) {
+	    std::cerr << "maxread is larger than buffer " 
+		    << maxread << std::endl;
+    	}
+
+    if (len_stderr > (BUFSIZE-1)) {
+	    std::cerr << "len_stderr is larger than buffer " 
+		    << len_stderr << std::endl;
+    	}
+
+    rd = read(PARENT_STDERR_FD, bufptr, maxread);
+
     if (rd > 0) {
         len_stderr += rd;
         //std::cout << len_stderr <<":[" << buf_stderr << "]" << std::endl;
