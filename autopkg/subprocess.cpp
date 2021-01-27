@@ -189,8 +189,8 @@ ssize_t Subprocess::BufferStderr()
 
     if ((BUFSIZE - len_stderr - 1) <= 0) {
 	DumpStderr(child_stderr);
-        std::cerr << "Not enough room in STDERR buffer. (len_stderr = " << len_stderr << ")" << std::endl;
 	ClearStderr();
+        std::cerr << "Not enough room in STDERR buffer. (len_stderr = " << len_stderr << "), flushing buffer" << std::endl;
     }
     rd = read(PARENT_STDERR_FD, bufptr, BUFSIZE - len_stderr - 1);
     if (rd > 0) {
